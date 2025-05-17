@@ -1,11 +1,36 @@
-import socket  # noqa: F401
-
+import socket
+from constants import HOST, PORT  # Ensure these are defined elsewhere
 
 def main():
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!")
-    server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
-    server_socket.accept()
+    server_socket = socket.create_server((HOST, PORT))
+
+    while True:
+        conn, addr = server_socket.accept()
+        print(f"Connected by {addr}")
+        with conn:
+            buffer = b""
+
+            while True:
+                chunk = conn.recv(1024)
+                if not chunk:
+                    break  # Client disconnected
+                buffer += chunk
+
+                # Look for full lines terminated by \n or \r
+                while b'\n' in buffer or b'\r' in buffer:
+                    # Use whichever comes first
+                    split_char = b'\r' if b'\r' in buffer else b'\n'
+                    line, buffer = buffer.split(split_char, 1)
+                    message = line.strip().decode()
+                    
+                    print("Received:", message)
+
+                    # Handle PING case-insensitively
+                    if message.lower() == "ping":
+                        conn.sendall(b"PONG\n")
+                    else:
+                        conn.sendall(line + b'\n')
 
 
 if __name__ == "__main__":
