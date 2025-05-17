@@ -1,5 +1,10 @@
 import socket
-from constants import HOST, PORT  # Ensure these are defined elsewhere
+# from constants import HOST, PORT  # Ensure these are defined elsewhere
+
+
+
+HOST = "0.0.0.0"
+PORT = 6379
 
 def main():
     print("Logs from your program will appear here!")
