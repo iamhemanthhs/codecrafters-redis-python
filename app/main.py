@@ -33,7 +33,7 @@ def main():
 
                     # Handle PING case-insensitively
                     if message.lower() == "ping":
-                        conn.sendall(b"PONG")
+                        conn.sendall("PONG")
                     # else:
                     #     conn.sendall(line + b'\n')
 
